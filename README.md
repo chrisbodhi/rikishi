@@ -1,5 +1,6 @@
 #Rikishi
 ##A Voting Application
+![rikishi: a sumo wrestler](https://openclipart.org/image/90px/svg_to_png/223220/SumoColour.png)
 
 ###Setup
 - Clone the repo and run `npm install` in the root of the cloned directory
@@ -13,6 +14,10 @@ After completing the npm installation process, run `npm start` from the root dir
 
 ####Publicly
 Visit the app on Heroku [todo]
+
+###Contributing
+- Branch features off of `develop`
+- Use the ES5 JavaScript Style Guide located [here](https://github.com/airbnb/javascript/tree/master/es5)
 
 ###Todo
 - [ ] Create a web app written in Node.JS using an Express-based framework, SequelizeJS, and MySQL.
