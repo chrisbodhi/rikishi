@@ -22,7 +22,7 @@ Visit the app on Heroku [todo]
 ###Todo
 - [ ] Create a web app written in Node.JS using an Express-based framework, SequelizeJS, and MySQL.
 - [x] Use the latest stable release of Node.JS v0.10.x.
-- [ ] Follow the ES5 JavaScript Style Guide located [here](https://github.com/airbnb/javascript/tree/master/es5)
+- [x] Follow the ES5 JavaScript Style Guide located [here](https://github.com/airbnb/javascript/tree/master/es5)
 - [x] Use NPM to declare all dependencies so that we can run it in a test environment.
 - [ ] The app should allow an admin to enter survey questions with multiple choice answers.
 - [ ] When a guest visits the app in a browser it should present a random survey question to the guest and allow them to answer.
