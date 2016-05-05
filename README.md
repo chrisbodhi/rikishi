@@ -18,6 +18,7 @@ Visit the app on Heroku [todo]
 ###Contributing
 - Branch features off of `develop`
 - Use the ES5 JavaScript Style Guide located [here](https://github.com/airbnb/javascript/tree/master/es5)
+- Make sure you have [Nodemon](http://nodemon.io) installed globally, and then run `npm run dev-start` to fire up the server locally, after running `npm install`
 
 ###Todo
 - [ ] Create a web app written in Node.JS using an Express-based framework, SequelizeJS, and MySQL.
