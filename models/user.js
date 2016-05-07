@@ -20,16 +20,13 @@ module.exports = function(sequelize, DataTypes) {
       associate: function(models) {
         User.hasMany(models.Result, { as: 'results' });
       },
-      // Generate a password hash
       generateHash: function(password) {
         return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
-      },
-
-      // Check if submitted password is valid
+      }
+    },
+    instanceMethods: {
       validPassword: function(password) {
-        // todo: make sure `this.local` works
-        console.log('this.local', this.local);
-        return bcrypt.compareSync(password, this.local.password);
+        return bcrypt.compareSync(password, this.password);
       }
     }
   });

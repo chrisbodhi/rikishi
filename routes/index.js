@@ -11,7 +11,7 @@ module.exports = function(router, passport) {
   });
 
   router.post('/signup', passport.authenticate('local-strategy', {
-    successRedirect: '/',
+    successRedirect: '/survey',
     failureRedirect: '/signup',
     failureFlash: true
   }));
@@ -23,8 +23,8 @@ module.exports = function(router, passport) {
     });
   });
 
-  router.post('/login', passport.authenticate('local-strategy', {
-    successRedirect: '/',
+  router.post('/login', passport.authenticate('local-login', {
+    successRedirect: '/survey',
     failureRedirect: '/login',
     failureFlash: true
   }));
