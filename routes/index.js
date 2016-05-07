@@ -1,44 +1,58 @@
-var express = require('express');
-var router = express.Router();
-var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
-var User = require('../models/index').User;
+module.exports = function(router, passport) {
+  router.get('/', function(req, res) {
+    res.render('index', { title: 'Express' });
+  });
 
-passport.use(new LocalStrategy(
-  function(username, password, done) {
-    User.findAll({
-      where: { name: username }
-    }).then(function(user) {
-      if (!user) {
-        return done(null, false, { message: 'Wrong username.' });
-      }
-      console.log('we have user', user);
-      // if (!user.validPassword(password)) {
-      //   return done(null, false, { message: 'Wrong password.' });
-      // }
-      return done(null, user);
-    })
-    .catch(function(err) {
-      return done(err);
+  router.get('/signup', function(req, res) {
+    res.render('signup', {
+      title: 'Sign Up',
+      message: req.flash('signupMessage')
     });
+  });
+
+  router.post('/signup', passport.authenticate('local-strategy', {
+    successRedirect: '/',
+    failureRedirect: '/signup',
+    failureFlash: true
+  }));
+
+  router.get('/login', function(req, res) {
+    res.render('login', {
+      title: 'Login Page',
+      message: req.flash('loginMessage')
+    });
+  });
+
+  router.post('/login', passport.authenticate('local-strategy', {
+    successRedirect: '/',
+    failureRedirect: '/login',
+    failureFlash: true
+  }));
+
+  router.get('/logout', function(req, res) {
+    req.logout();
+    res.redirect('/');
+  });
+
+  router.get('/nope', function(req, res) {
+    res.render('index', { title: 'Nope Page' });
+  });
+
+  router.get('/survey', isLoggedIn, function(req, res) {
+    res.render('survey', { user: req.user });
+  });
+
+  return router;
+};
+
+// eslint-disable-next-line consistent-return
+function isLoggedIn(req, res, next) {
+  // Verify user is logged in & authenticated
+  if (req.isAuthenticated()) {
+    return next();
   }
-));
 
-router.get('/', function(req, res) {
-  res.render('index', { title: 'Express' });
-});
-
-router.get('/login', function(req, res) {
-  res.render('login', { title: 'Login Page' });
-});
-
-router.get('/nope', function(req, res) {
-  res.render('index', { title: 'Nope Page' });
-});
-
-router.post('/login', passport.authenticate('local', {
-  successRedirect: '/',
-  failureRedirect: '/nope' })
-);
-
-module.exports = router;
+  // Redirect to login page if not ok
+  // todo: tack on destination query param for redirect after login
+  res.redirect('/login');
+}

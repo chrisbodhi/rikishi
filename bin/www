@@ -33,12 +33,15 @@ var server = http.createServer(app);
 
 db.sequelize
   .sync()
+  // .sync({ force: true })
   .then(function() {
+    // require('../db/seed')(db);
     server.listen(port, function() {
       console.log('Express server listening on port ' + port);
     });
   })
   .catch(function(err) {
+    console.log(err);
     throw new Error(err);
   });
 

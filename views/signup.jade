@@ -5,7 +5,7 @@ block content
   if message.length
     p There has been a problem: 
     p= message
-  form(action="/login" method="post")
+  form(action="/signup" method="post")
     div
       label Email:
       input(type="text" name="email" autofocus)
@@ -13,5 +13,8 @@ block content
       label Password:
       input(type="password" name="password")
     div
-      input(type="submit" value="Log In")
+      label Password, once more:
+      input(type="password" name="confirm-password")
+    div
+      input(type="submit" value="Sign Up")
 
