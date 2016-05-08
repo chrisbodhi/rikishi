@@ -7,6 +7,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "babel": "5.8.34",
     "bcrypt": "^0.8.6",
     "body-parser": "~1.13.2",
     "connect-flash": "^0.1.1",
@@ -20,6 +21,8 @@
     "mysql": "^2.10.2",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
+    "react": "0.14.8",
+    "react-dom": "0.14.8",
     "sequelize": "^3.22.0",
     "sequelize-cli": "^2.4.0",
     "serve-favicon": "~2.3.0"

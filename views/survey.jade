@@ -3,7 +3,11 @@ extends layout
 block content
   h1 Survey
 
-  unless user.isAdmin
+  if user.isAdmin
+    #results
+    hr
+    a(href="/surveys/add") add a survey
+  else if user
     h2 Hey. Wanna take a survey?
     p= user.email
     p= user.password
@@ -11,9 +15,5 @@ block content
     ul
     - for (var i=0; i < Object.keys(user.dataValues).length; i++)
       li= Object.keys(user.dataValues)[i]
-
-  if user.isAdmin
-    .results
-      p Results go here
-    hr
-    a(href="/surveys/add") add a survey
+  else
+    h2 Better log in, bub.
