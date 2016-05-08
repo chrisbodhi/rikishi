@@ -50,11 +50,18 @@ var SurveyResults = React.createClass({
   }
 });
 
+var VoteForm = React.createClass({render: function(){}});
+
 if (isNode) {
   exports.SurveyResults = SurveyResults;
+  exports.VoteForm = VoteForm;
 } else {
   ReactDOM.render(
     <SurveyResults results='[]' />,
     document.getElementById('results')
+  );
+  ReactDOM.render(
+    <VoteForm />,
+    document.getElementById('vote-form')
   );
 }

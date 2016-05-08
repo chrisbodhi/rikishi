@@ -4,11 +4,13 @@ block content
   h1 Survey
 
   if user.isAdmin
-    #results
-    hr
     a(href="/surveys/add") add a survey
+    hr
+    #results
   else if user
     h2 Hey. Wanna take a survey?
+    #vote-form
+    hr
     p= user.email
     p= user.password
     
