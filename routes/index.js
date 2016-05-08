@@ -1,3 +1,5 @@
+var isLoggedIn = require('../modules/auth').isLoggedIn;
+
 module.exports = function(router, passport) {
   router.get('/', function(req, res) {
     res.render('index', { title: 'Express' });
@@ -36,14 +38,3 @@ module.exports = function(router, passport) {
 
   return router;
 };
-
-// eslint-disable-next-line consistent-return
-function isLoggedIn(req, res, next) {
-  if (req.isAuthenticated()) {
-    return next();
-  }
-
-  // Redirect to login page if not ok
-  // todo: tack on destination query param for redirect after login
-  res.redirect('/login');
-}

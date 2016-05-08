@@ -1,7 +1,10 @@
-var express = require('express');
-var router = express.Router();
-var db = require('../models/index');
 var _ = require('lodash');
+var express = require('express');
+
+var db = require('../models/index');
+var isAdmin = require('../modules/auth').isAdmin;
+
+var router = express.Router();
 
 // ///////// Start of helper functions
 function insertResponse(res, questionId, answerString) {
@@ -14,17 +17,6 @@ function insertResponse(res, questionId, answerString) {
     console.log('Problem saving response', err);
     res.send({message: 'Problem saving answer ' + answerString});
   });
-}
-
-// todo: tack on destination query param for redirect after login
-// eslint-disable-next-line consistent-return
-function isAdmin(req, res, next) {
-  if (req.isAuthenticated() && req.user.isAdmin) {
-    return next();
-  }
-
-  // Redirect to login page if not ok
-  res.redirect('/login');
 }
 
 function parseResults(resultsArr) {
