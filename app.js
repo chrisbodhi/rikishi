@@ -1,17 +1,16 @@
 var express = require('express');
 var path = require('path');
 
-var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var session = require('express-session');
-var passport = require('passport');
+var cookieParser = require('cookie-parser');
 var flash = require('connect-flash');
-
-var router = express.Router();
+var passport = require('passport');
+var session = require('express-session');
 
 var app = express();
+var router = express.Router();
 
-// view engine setup
+// Setup view engine
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
@@ -40,20 +39,19 @@ app.use('/api', api);
 var routes = require('./routes/index')(router, passport);
 app.use('/', routes);
 
-var surveys = require('./routes/surveys');
+var surveys = require('./routes/surveys')(router);
 app.use('/surveys', surveys);
 
-// catch 404 and forward to error handler
+// Catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
 
-// error handlers
+// Error handlers
 
-// development error handler
-// will print stacktrace
+// Prints stacktrace
 if (app.get('env') === 'development') {
   app.use(function(err, req, res) {
     res.status(err.status || 500);
