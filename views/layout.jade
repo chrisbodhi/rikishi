@@ -4,4 +4,11 @@ html
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
+    if user
+      a(href='logout') Log out
+    else
+      a(href='login') Log in
+      span  | 
+      a(href='signup') Sign up
+
     block content
