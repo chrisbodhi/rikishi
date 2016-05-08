@@ -16,9 +16,12 @@ router.get('/surveys/:id', function(req, res) {
     where: { id: req.params.id },
     include: [{ model: db.Response, as: 'responses'}]
   }).then(function(survey) {
+    var answers = survey.responses.map(function(obj) {
+      return obj.dataValues.answer;
+    });
     res.send({
       question: survey.question,
-      answers: survey.answers
+      answers: answers
     });
   });
 });

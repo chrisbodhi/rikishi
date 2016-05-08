@@ -13,11 +13,12 @@
 After completing the npm installation process, run `npm start` from the root directory, then visit [localhost:3000](http://localhost:3000).
 
 ####Publicly
-Visit the app on Heroku [todo]
+Visit the app on [Heroku](https://nameless-lake-26408.herokuapp.com/) and get to surveyin'!
 
 ###Contributing
-- Branch features off of `develop`
-- Use the ES5 JavaScript Style Guide located [here](https://github.com/airbnb/javascript/tree/master/es5)
+- Features branches split off of `develop`, per [GitHub Flow](https://guides.github.com/introduction/flow/).
+- Use the ES5 JavaScript Style Guide located [here](https://github.com/airbnb/javascript/tree/master/es5).
+- Make sure you have [Nodemon](http://nodemon.io) installed globally, and then run `npm run dev-start` to fire up the server locally.
 
 ###Todo
 - [ ] Create a web app written in Node.JS using an Express-based framework, SequelizeJS, and MySQL.
