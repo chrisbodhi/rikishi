@@ -1,0 +1,27 @@
+extends layout
+
+block content
+  h1 Survey
+
+  if user.isAdmin
+    if message.length
+      span= message
+    .results
+      p todo: add a visual for results here
+      p= results
+    form(action="/api/surveys" method="post")
+      div
+        label Question
+        input(type="text" name="question" autofocus required)
+      div
+        label Answer 1
+        input(type="text" name="answer1" required)
+      div
+        label Answer 2
+        input(type="text" name="answer2" required)
+      div
+        label Answer 3
+        input(type="text" name="answer3")
+      div
+        input(type="submit" value="Add Survey")
+

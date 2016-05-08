@@ -11,7 +11,7 @@ module.exports = function(router, passport) {
   });
 
   router.post('/signup', passport.authenticate('local-strategy', {
-    successRedirect: '/survey',
+    successRedirect: '/surveys',
     failureRedirect: '/signup',
     failureFlash: true
   }));
@@ -24,21 +24,14 @@ module.exports = function(router, passport) {
   });
 
   router.post('/login', passport.authenticate('local-login', {
-    successRedirect: '/survey',
+    successRedirect: '/surveys',
     failureRedirect: '/login',
     failureFlash: true
   }));
 
-  router.get('/logout', function(req, res) {
+  router.get('/logout', isLoggedIn, function(req, res) {
     req.logout();
     res.redirect('/');
-  });
-
-  router.get('/survey', isLoggedIn, function(req, res) {
-    res.render('survey', {
-      user: req.user,
-      message: req.flash('surveyMessage')
-    });
   });
 
   return router;
@@ -46,7 +39,6 @@ module.exports = function(router, passport) {
 
 // eslint-disable-next-line consistent-return
 function isLoggedIn(req, res, next) {
-  // Verify user is logged in & authenticated
   if (req.isAuthenticated()) {
     return next();
   }

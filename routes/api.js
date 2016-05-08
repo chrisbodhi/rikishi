@@ -63,7 +63,7 @@ router.get('/surveys', isAdmin, function(req, res) {
   });
 });
 
-router.post('/surveys', isAdmin, function(req, res) {
+router.post('/surveys', isAdmin, function(req, res, next) {
   var question = req.body.question;
 
   // Handles situation where there are fewer than 3 answers
@@ -79,13 +79,13 @@ router.post('/surveys', isAdmin, function(req, res) {
     _.forEach(answers, function(answer) {
       insertResponse(res, questionId, answer);
     });
-    res.send({
-      message: 'Added survey #' + questionId + ' successfully!'
-    });
+    next();
   }).catch(function(err) {
     console.log('Problem saving question', err);
     res.send({message: 'Problem saving question.'});
   });
+  req.flash('surveyMessage', 'Question recorded!');
+  res.redirect('back');
 });
 
 router.get('/survey/:id', function(req, res) {
