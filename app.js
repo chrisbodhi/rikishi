@@ -33,6 +33,7 @@ app.use(passport.session());
 app.use(flash());
 require('./config/passport')(passport);
 
+// Atypical, but I'm into this grouping
 var api = require('./routes/api');
 app.use('/', api);
 

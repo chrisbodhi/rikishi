@@ -3,15 +3,7 @@ var router = express.Router();
 var db = require('../models/index');
 var _ = require('lodash');
 
-router.get('/surveys', function(req, res) {
-  db.Survey.findAll()
-    .then(function(surveys) {
-      res.send({
-        surveys: surveys
-      });
-    });
-});
-
+// Start of helper functions
 function insertResponse(res, questionId, answerString) {
   db.Response.create({
     answer: answerString,
@@ -23,6 +15,31 @@ function insertResponse(res, questionId, answerString) {
     res.send({message: 'Problem saving answer ' + answerString});
   });
 }
+
+// eslint-disable-next-line consistent-return
+function isAdmin(req, res, next) {
+  // Verify user is logged in & authenticated
+  if (req.isAuthenticated() && req.user.isAdmin) {
+    return next();
+  }
+
+  // Redirect to login page if not ok
+  // todo: tack on destination query param for redirect after login
+  res.redirect('/login');
+}
+
+// End helper functions
+
+// Start of routes
+
+router.get('/surveys', function(req, res) {
+  db.Survey.findAll()
+    .then(function(surveys) {
+      res.send({
+        surveys: surveys
+      });
+    });
+});
 
 router.post('/survey', isAdmin, function(req, res) {
   var question = req.body.question;
@@ -85,17 +102,5 @@ router.get('/results/:surveyId', function(req, res) {
     }
   });
 });
-
-// eslint-disable-next-line consistent-return
-function isAdmin(req, res, next) {
-  // Verify user is logged in & authenticated
-  if (req.isAuthenticated() && req.user.isAdmin) {
-    return next();
-  }
-
-  // Redirect to login page if not ok
-  // todo: tack on destination query param for redirect after login
-  res.redirect('/login');
-}
 
 module.exports = router;
