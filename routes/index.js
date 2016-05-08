@@ -34,10 +34,6 @@ module.exports = function(router, passport) {
     res.redirect('/');
   });
 
-  router.get('/nope', function(req, res) {
-    res.render('index', { title: 'Nope Page' });
-  });
-
   router.get('/survey', isLoggedIn, function(req, res) {
     res.render('survey', {
       user: req.user,
