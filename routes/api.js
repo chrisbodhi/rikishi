@@ -3,7 +3,7 @@ var router = express.Router();
 var db = require('../models/index');
 var _ = require('lodash');
 
-// Start of helper functions
+// ///////// Start of helper functions
 function insertResponse(res, questionId, answerString) {
   db.Response.create({
     answer: answerString,
@@ -16,33 +16,58 @@ function insertResponse(res, questionId, answerString) {
   });
 }
 
+// todo: tack on destination query param for redirect after login
 // eslint-disable-next-line consistent-return
 function isAdmin(req, res, next) {
-  // Verify user is logged in & authenticated
   if (req.isAuthenticated() && req.user.isAdmin) {
     return next();
   }
 
   // Redirect to login page if not ok
-  // todo: tack on destination query param for redirect after login
   res.redirect('/login');
 }
 
-// End helper functions
-
-// Start of routes
-
-router.get('/surveys', function(req, res) {
-  db.Survey.findAll()
-    .then(function(surveys) {
-      res.send({
-        surveys: surveys
-      });
+function parseResults(resultsArr) {
+  return _.map(resultsArr, function(obj) {
+    var question = obj.question;
+    var counts = _.map(obj.responses, function(resp) {
+      return {
+        response: resp.answer,
+        count: _.filter(obj.results, function(resu) {
+          return resu.ResponseId === resp.id;
+        }).length
+      };
     });
+    return {
+      question: question,
+      counts: counts
+    };
+  });
+}
+
+// ///////// End helper functions
+
+// ///////// Start of routes
+
+// router.get('/surveys', isAdmin, function(req, res) {
+router.get('/surveys', function(req, res) {
+  db.Survey.findAll({
+    include: [
+      { model: db.Response, as: 'responses'},
+      { model: db.Result, as: 'results'}
+    ]
+  }).then(function(surveys) {
+    var parsedResults = parseResults(surveys);
+    res.send({
+      surveyResults: parsedResults
+    });
+  });
 });
 
-router.post('/survey', isAdmin, function(req, res) {
+router.post('/surveys', isAdmin, function(req, res) {
   var question = req.body.question;
+
+  // Handles situation where there are fewer than 3 answers
   var answers = _.compact([
     req.body.answer1,
     req.body.answer2,
@@ -64,7 +89,7 @@ router.post('/survey', isAdmin, function(req, res) {
   });
 });
 
-router.get('/surveys/:id', function(req, res) {
+router.get('/survey/:id', function(req, res) {
   db.Survey.find({
     where: { id: req.params.id },
     include: [{ model: db.Response, as: 'responses'}]
@@ -91,7 +116,7 @@ router.post('/results', function(req, res) {
   });
 });
 
-router.get('/results/:surveyId', function(req, res) {
+router.get('/result/:surveyId', function(req, res) {
   var surveyId = req.params.surveyId;
 
   db.Result.getResults(surveyId, function(err, count) {

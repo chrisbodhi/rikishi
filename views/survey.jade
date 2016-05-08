@@ -16,7 +16,10 @@ block content
     if message.length
       p There has been a problem: 
         span= message
-    form(action="/survey" method="post")
+    .results
+      p todo: add a visual for results here
+      p= results
+    form(action="/surveys" method="post")
       div
         label Question
         input(type="text" name="question" autofocus required)
