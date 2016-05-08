@@ -1,6 +1,36 @@
 var express = require('express');
 var router = express.Router();
 var db = require('../models/index');
+var _ = require('lodash');
+
+// Start of helper functions
+function insertResponse(res, questionId, answerString) {
+  db.Response.create({
+    answer: answerString,
+    SurveyId: questionId
+  }).then(function(newAnswer) {
+    console.log('Added answer', newAnswer.dataValues);
+  }).catch(function(err) {
+    console.log('Problem saving response', err);
+    res.send({message: 'Problem saving answer ' + answerString});
+  });
+}
+
+// eslint-disable-next-line consistent-return
+function isAdmin(req, res, next) {
+  // Verify user is logged in & authenticated
+  if (req.isAuthenticated() && req.user.isAdmin) {
+    return next();
+  }
+
+  // Redirect to login page if not ok
+  // todo: tack on destination query param for redirect after login
+  res.redirect('/login');
+}
+
+// End helper functions
+
+// Start of routes
 
 router.get('/surveys', function(req, res) {
   db.Survey.findAll()
@@ -9,6 +39,29 @@ router.get('/surveys', function(req, res) {
         surveys: surveys
       });
     });
+});
+
+router.post('/survey', isAdmin, function(req, res) {
+  var question = req.body.question;
+  var answers = _.compact([
+    req.body.answer1,
+    req.body.answer2,
+    req.body.answer3
+  ]);
+  db.Survey.create({
+    question: question
+  }).then(function(newQuestion) {
+    var questionId = newQuestion.id;
+    _.forEach(answers, function(answer) {
+      insertResponse(res, questionId, answer);
+    });
+    res.send({
+      message: 'Added survey #' + questionId + ' successfully!'
+    });
+  }).catch(function(err) {
+    console.log('Problem saving question', err);
+    res.send({message: 'Problem saving question.'});
+  });
 });
 
 router.get('/surveys/:id', function(req, res) {
