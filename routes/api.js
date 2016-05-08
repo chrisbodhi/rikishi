@@ -49,8 +49,7 @@ function parseResults(resultsArr) {
 
 // ///////// Start of routes
 
-// router.get('/surveys', isAdmin, function(req, res) {
-router.get('/surveys', function(req, res) {
+router.get('/surveys', isAdmin, function(req, res) {
   db.Survey.findAll({
     include: [
       { model: db.Response, as: 'responses'},

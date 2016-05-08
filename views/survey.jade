@@ -19,7 +19,7 @@ block content
     .results
       p todo: add a visual for results here
       p= results
-    form(action="/surveys" method="post")
+    form(action="/api/surveys" method="post")
       div
         label Question
         input(type="text" name="question" autofocus required)
