@@ -39,7 +39,10 @@ module.exports = function(router, passport) {
   });
 
   router.get('/survey', isLoggedIn, function(req, res) {
-    res.render('survey', { user: req.user });
+    res.render('survey', {
+      user: req.user,
+      message: req.flash('surveyMessage')
+    });
   });
 
   return router;

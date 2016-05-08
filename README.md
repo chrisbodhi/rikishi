@@ -21,7 +21,7 @@ Visit the app on [Heroku](https://nameless-lake-26408.herokuapp.com/) and get to
 - Make sure you have [Nodemon](http://nodemon.io) installed globally, and then run `npm run dev-start` to fire up the server locally.
 
 ###Todo
-- [ ] Create a web app written in Node.JS using an Express-based framework, SequelizeJS, and MySQL.
+- [x] Create a web app written in Node.JS using an Express-based framework, SequelizeJS, and MySQL.
 - [x] Use the latest stable release of Node.JS v0.10.x.
 - [x] Follow the ES5 JavaScript Style Guide located [here](https://github.com/airbnb/javascript/tree/master/es5)
 - [x] Use NPM to declare all dependencies so that we can run it in a test environment.

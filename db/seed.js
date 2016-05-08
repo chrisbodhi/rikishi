@@ -1,7 +1,7 @@
 module.exports = function(db) {
   db.User.create({
     email: 'alice@example.com',
-    password: 'salted_biz'
+    password: '$2a$08$5yS6KGzh79KJQCnDLyw9s.08/StoZTf/67wvgf3hMgSbJFwjCYxja'
   }).then(function(userRes) {
     db.Survey.create({
       question: 'Which cat would you like on your couch?'
