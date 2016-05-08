@@ -1,0 +1,34 @@
+extends layout
+
+block content
+  h1 Survey
+
+  unless user.isAdmin
+    h2 Hey. Wanna take a survey?
+    p= user.email
+    p= user.password
+    
+    ul
+    - for (var i=0; i < Object.keys(user.dataValues).length; i++)
+      li= Object.keys(user.dataValues)[i]
+
+  if user.isAdmin
+    if message.length
+      p There has been a problem: 
+        span= message
+    form(action="/survey" method="post")
+      div
+        label Question
+        input(type="text" name="question" autofocus required)
+      div
+        label Answer 1
+        input(type="text" name="answer1" required)
+      div
+        label Answer 2
+        input(type="text" name="answer2" required)
+      div
+        label Answer 3
+        input(type="text" name="answer3")
+      div
+        input(type="submit" value="Add Survey")
+
