@@ -7,6 +7,27 @@ var isAdmin = require('../modules/auth').isAdmin;
 var router = express.Router();
 
 // ///////// Start of helper functions
+function getNextSurveyId(userId) {
+  var getSurveyId = _.flow(_.difference, _.sample);
+  return db.Survey.findAll({
+    attributes: ['id']
+  }).then(function(surveys) {
+    return _.map(surveys, function(s) {
+      return s.dataValues.id;
+    });
+  }).then(function(allIds) {
+    return db.Result.findAll({
+      where: {UserId: userId},
+      attributes: ['SurveyId']
+    }).then(function(results) {
+      var answered = _.map(results, function(r) {
+        return r.dataValues.SurveyId;
+      });
+      return getSurveyId(allIds, answered);
+    });
+  });
+}
+
 function insertResponse(res, questionId, answerString) {
   db.Response.create({
     answer: answerString,
@@ -85,10 +106,15 @@ router.get('/survey/:id', function(req, res) {
     where: { id: req.params.id },
     include: [{ model: db.Response, as: 'responses'}]
   }).then(function(survey) {
-    var answers = survey.responses.map(function(obj) {
-      return obj.dataValues.answer;
+    var answers = _.map(survey.responses, function(obj) {
+      return {
+        id: obj.dataValues.id,
+        text: obj.dataValues.answer
+      };
     });
+
     res.send({
+      id: survey.id,
       question: survey.question,
       answers: answers
     });
@@ -96,15 +122,24 @@ router.get('/survey/:id', function(req, res) {
 });
 
 router.post('/results', function(req, res) {
-  var userId = req.user.id;           // todo: yeah right
-  var selection = req.body.response;  // todo: see above note
-  db.Result.addResponse(userId, selection, function(err, resp) {
-    if (err) {
-      res.send(err);
-    } else {
-      res.send(resp);
-    }
-  });
+  // todo: compare `userId` to `req.user.dataValues.id`
+  // for user confirmation
+  var userId = parseInt(req.body.userId, 10);
+  var respId = parseInt(req.body.answerId, 10);
+  var surveyId = parseInt(req.body.surveyId, 10);
+
+  try {
+    db.Result.addResult(userId, respId, surveyId, function(result) {
+      console.log('Saved result', _.size(result));
+      res.send('Successfully recorded result.');
+      // req.flash('surveyMessage', 'Response saved!');
+      // res.redirect('back');
+    });
+  } catch (err) {
+    console.log('Err recording result', err);
+    req.flash('surveyMessage', 'Error!');
+    res.redirect('back');
+  }
 });
 
 router.get('/result/:surveyId', function(req, res) {
@@ -117,6 +152,22 @@ router.get('/result/:surveyId', function(req, res) {
       res.send({ count: count });
     }
   });
+});
+
+router.get('/user', function(req, res) {
+  res.send({ user: req.user.dataValues });
+});
+
+router.get('/survey/user/:userId', function(req, res) {
+  var userId = req.params.userId;
+
+  getNextSurveyId(userId)
+    .then(function(nextId) {
+      res.send({ nextId: nextId });
+    })
+    .catch(function(err) {
+      console.log('Error getting ID for next survey', err);
+    });
 });
 
 module.exports = router;

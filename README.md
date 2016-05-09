@@ -28,7 +28,8 @@ Visit the app on [Heroku](https://nameless-lake-26408.herokuapp.com/) and get to
 - [x] The app should allow an admin to enter survey questions with multiple choice answers.
 - [ ] When a guest visits the app in a browser it should present a random survey question to the guest and allow them to answer.
 - [ ] Avoid showing a previously-answered question to the same guest.
-- [ ] Record answers and display the survey results in an admin interface.
+- [ ] Record answers and...
+- [x] ...display the survey results in an admin interface.
 - [x] Secure the admin interface from guests.
 - [ ] Make sure the UI is mobile browser friendly.
 - [ ] Provide a clear README with instructions on how to setup and run the app.
