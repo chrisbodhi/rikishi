@@ -53,11 +53,12 @@ var SurveyResults = React.createClass({
 var SurveyForm = React.createClass({
   getInitialState: function() {
     return {
+      user: {},
       survey: {},
       answerId: 0
     };
   },
-  // todo: troubleshoot repeats of previously-seen surveys
+
   getNextSurvey: function() {
     $.get('/api/survey/user/' + this.props.user.id)
       .then(function(resp) {
@@ -72,6 +73,10 @@ var SurveyForm = React.createClass({
 
   handleClick: function(event) {
     this.setState({ answerId: event.target.value });
+  },
+
+  componentWillReceiveProps: function(nextProps) {
+    this.setState({ user: nextProps.user });
   },
 
   componentDidMount: function() {
@@ -91,9 +96,9 @@ var SurveyForm = React.createClass({
       },
       success: function(data) {
         console.log('Added to the results', data);
-        this.getNextSurvey();
       }
     });
+    this.getNextSurvey();
   },
 
   render: function() {

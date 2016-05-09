@@ -7,9 +7,8 @@ var isAdmin = require('../modules/auth').isAdmin;
 var router = express.Router();
 
 // ///////// Start of helper functions
-function getNextSurveyId(id) {
+function getNextSurveyId(userId) {
   var getSurveyId = _.flow(_.difference, _.sample);
-
   return db.Survey.findAll({
     attributes: ['id']
   }).then(function(surveys) {
@@ -18,7 +17,7 @@ function getNextSurveyId(id) {
     });
   }).then(function(allIds) {
     return db.Result.findAll({
-      where: {UserId: id},
+      where: {UserId: userId},
       attributes: ['SurveyId']
     }).then(function(results) {
       var answered = _.map(results, function(r) {
@@ -123,8 +122,6 @@ router.get('/survey/:id', function(req, res) {
 });
 
 router.post('/results', function(req, res) {
-  console.log('@@@@post results', req.body);
-
   // todo: compare `userId` to `req.user.dataValues.id`
   // for user confirmation
   var userId = parseInt(req.body.userId, 10);
@@ -133,7 +130,7 @@ router.post('/results', function(req, res) {
 
   try {
     db.Result.addResult(userId, respId, surveyId, function(result) {
-      console.log('Saved result:', result);
+      console.log('Saved result', _.size(result));
       res.send('Successfully recorded result.');
       // req.flash('surveyMessage', 'Response saved!');
       // res.redirect('back');
