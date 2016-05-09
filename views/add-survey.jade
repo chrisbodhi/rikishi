@@ -6,9 +6,6 @@ block content
   if user.isAdmin
     if message.length
       span= message
-    .results
-      p todo: add a visual for results here
-      p= results
     form(action="/api/surveys" method="post")
       div
         label Question
