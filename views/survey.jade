@@ -1,0 +1,11 @@
+extends layout
+
+block content
+  if message.length
+    p= message
+  if user.isAdmin
+    #survey.container
+  else if user
+    #survey.container
+  else
+    h2 Better log in, bub.
