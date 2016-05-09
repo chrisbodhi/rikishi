@@ -46,7 +46,6 @@ function parseResults(resultsArr) {
   return _.map(resultsArr, function(obj) {
     var question = obj.question;
     var counts = _.map(obj.responses, function(resp) {
-
       return {
         response: resp.answer,
         count: _.filter(obj.results, function(resu) {
