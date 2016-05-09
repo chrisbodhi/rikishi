@@ -33,17 +33,23 @@ var SurveyResults = React.createClass({
     var results = this.state.results
       ? this.state.results
       : this.props.results;
+
     return (<ul>
         {_.map(results, function(result, index) {
           return <li key={index}>
-            <p>{result.question}</p>
-            <ul>
-              {_.map(result.counts, function(ct, index) {
-                return <li key={'ct=' + index}>
-                  {ct.response} | {ct.count}
-                </li>
-              })}
-            </ul>
+            <div className='card blue-grey darken-1'>
+              <div className='card-content white-text'>
+                <p className='card-title'>{result.question}</p>
+                <ul>
+                  {_.map(result.counts, function(ct, index) {
+                    return <li key={'ct=' + index}>
+                      {ct.response}&nbsp;|&nbsp;
+                        <span className='count'>{ct.count}</span>
+                    </li>
+                  })}
+                </ul>
+              </div>
+            </div>
           </li>
         })}
       </ul>);
@@ -72,6 +78,7 @@ var SurveyForm = React.createClass({
   },
 
   handleClick: function(event) {
+    console.log('event.target.value', event.target.value);
     this.setState({ answerId: event.target.value });
   },
 
@@ -105,24 +112,31 @@ var SurveyForm = React.createClass({
     var question = this.state.survey.question;
     var answers = this.state.survey.answers;
     return (
-      <form action={this.submitForm}>
-        <fieldset>
-          <label>Question: {question}</label>
-          <ul>
-            {_.map(answers, function(answer, index) {
-              return (<li key={index}>
-                <input
-                  type='radio'
-                  name='answer'
-                  value={answer.id}
-                  onChange={this.handleClick}/>
-                {answer.text}
-              </li>);
-            }.bind(this))}
-          </ul>
-          <input type='submit' onClick={this.submitForm} />
-        </fieldset>
-      </form>
+      <div className='row'>
+        <form action={this.submitForm}
+          className='col s10 offset-s1 l4 offset-l4'>
+          <h4 className='card-panel'>{question}</h4>
+            <fieldset className='card-panel'>
+              {_.map(answers, function(answer, index) {
+                return (<p id={index}>
+                  <input
+                    name='answer'
+                    type='radio'
+                    value={answer.id}
+                    id={answer.id}
+                    onChange={this.handleClick}/>
+                  <label
+                    htmlFor={answer.id}
+                    className='teal-text text-darken-4'
+                  >
+                    {answer.text}
+                  </label>
+                </p>);
+              }.bind(this))}
+            <input type='submit' onClick={this.submitForm} />
+          </fieldset>
+        </form>
+      </div>
     );
   }
 });
