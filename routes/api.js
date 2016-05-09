@@ -107,11 +107,15 @@ router.get('/survey/:id', function(req, res) {
     where: { id: req.params.id },
     include: [{ model: db.Response, as: 'responses'}]
   }).then(function(survey) {
-    var answers = survey.responses.map(function(obj) {
-      return obj.dataValues.answer;
+    var answers = _.map(survey.responses, function(obj) {
+      return {
+        id: obj.dataValues.id,
+        text: obj.dataValues.answer
+      };
     });
 
     res.send({
+      id: survey.id,
       question: survey.question,
       answers: answers
     });
@@ -119,16 +123,26 @@ router.get('/survey/:id', function(req, res) {
 });
 
 router.post('/results', function(req, res) {
-  var userId = req.user.id;           // todo: yeah right
-  var selection = req.body.response;  // todo: see above note
+  console.log('@@@@post results', req.body);
 
-  db.Result.addResponse(userId, selection, function(err, resp) {
-    if (err) {
-      res.send(err);
-    } else {
-      res.send(resp);
-    }
-  });
+  // todo: compare `userId` to `req.user.dataValues.id`
+  // for user confirmation
+  var userId = parseInt(req.body.userId, 10);
+  var respId = parseInt(req.body.answerId, 10);
+  var surveyId = parseInt(req.body.surveyId, 10);
+
+  try {
+    db.Result.addResult(userId, respId, surveyId, function(result) {
+      console.log('Saved result:', result);
+      res.send('Successfully recorded result.');
+      // req.flash('surveyMessage', 'Response saved!');
+      // res.redirect('back');
+    });
+  } catch (err) {
+    console.log('Err recording result', err);
+    req.flash('surveyMessage', 'Error!');
+    res.redirect('back');
+  }
 });
 
 router.get('/result/:surveyId', function(req, res) {

@@ -54,10 +54,10 @@ var SurveyForm = React.createClass({
   getInitialState: function() {
     return {
       survey: {},
-      answer: ''
+      answerId: 0
     };
   },
-
+  // todo: troubleshoot repeats of previously-seen surveys
   getNextSurvey: function() {
     $.get('/api/survey/user/' + this.props.user.id)
       .then(function(resp) {
@@ -71,15 +71,29 @@ var SurveyForm = React.createClass({
   },
 
   handleClick: function(event) {
-    this.setState({ answer: event.target.value });
+    this.setState({ answerId: event.target.value });
   },
 
   componentDidMount: function() {
     this.getNextSurvey();
   },
 
-  submitForm: function() {
-    $.post().then();
+  submitForm: function(event) {
+    event.preventDefault();
+
+    $.ajax({
+      type: 'POST',
+      url: '/api/results',
+      data: {
+        userId: this.props.user.id,
+        surveyId: this.state.survey.id,
+        answerId: this.state.answerId
+      },
+      success: function(data) {
+        console.log('Added to the results', data);
+        this.getNextSurvey();
+      }
+    });
   },
 
   render: function() {
@@ -89,20 +103,19 @@ var SurveyForm = React.createClass({
       <form action={this.submitForm}>
         <fieldset>
           <label>Question: {question}</label>
-          <label>Answer: {this.state.answer}</label>
           <ul>
             {_.map(answers, function(answer, index) {
               return (<li key={index}>
                 <input
                   type='radio'
                   name='answer'
-                  value={answer}
+                  value={answer.id}
                   onChange={this.handleClick}/>
-                {answer}
+                {answer.text}
               </li>);
             }.bind(this))}
           </ul>
-          <input type='submit' value='Vote!' />
+          <input type='submit' onClick={this.submitForm} />
         </fieldset>
       </form>
     );

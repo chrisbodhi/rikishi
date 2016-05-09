@@ -14,17 +14,17 @@ module.exports = function(sequelize, DataTypes) {
             callback(null, results);
           });
       },
-      addResponse: function(userId, selection) {
+      addResult: function(userId, respId, surveyId) {
         // todo: add verification that user has not already
         // entered a selection for this survey question
-        Response.create({
+        Result.create({
           UserId: userId,
-          ResponseId: selection.id,
-          SurveyId: selection.surveyId
+          ResponseId: respId,
+          SurveyId: surveyId
         }).then(function(input) {
-          console.log('input:', input);
+          console.log('\n\nAdded result:', input);
         }).catch(function(err) {
-          console.log('Error in addResponse', err);
+          console.log('Error in addResult', err);
         });
       }
     }

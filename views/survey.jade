@@ -1,8 +1,11 @@
 extends layout
 
 block content
+  if message.length
+    p= message
   if user.isAdmin
-    a(href="/surveys/add") add a survey
+    hr
+    a(href="/surveys/add") Add a survey
     hr
     h2 Survey Results!
     #survey
