@@ -1,24 +1,27 @@
 extends layout
 
 block content
-  h1 Survey
-
   if user.isAdmin
     if message.length
       span= message
-    form(action="/api/surveys" method="post")
-      div
-        label Question
-        input(type="text" name="question" autofocus required)
-      div
-        label Answer 1
-        input(type="text" name="answer1" required)
-      div
-        label Answer 2
-        input(type="text" name="answer2" required)
-      div
-        label Answer 3
-        input(type="text" name="answer3")
-      div
-        input(type="submit" value="Add Survey")
+    #container
+      .row
+        .col.s10.offset-s1.l4.offset-l4
+          h1 Survey
+
+          form.card-panel(action="/api/surveys" method="post")
+            div
+              label Question
+              input(type="text" name="question" autofocus required)
+            div
+              label Answer 1
+              input(type="text" name="answer1" required)
+            div
+              label Answer 2
+              input(type="text" name="answer2" required)
+            div
+              label Answer 3
+              input(type="text" name="answer3")
+            div
+              input(type="submit" value="Add Survey")
 

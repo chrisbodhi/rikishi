@@ -2,14 +2,27 @@ doctype html
 html
   head
     title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet' href='/stylesheets/style.css')
+    link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css')
+    meta(name='viewport' content='width=device-width, initial-scale=1.0')
+
+     
   body
-    if user
-      a(href='logout') Log out
-    else
-      a(href='login') Log in
-      span  | 
-      a(href='signup') Sign up
+    header Rikishi&nbsp;|   
+      span
+        a(href='https://github.com/chrisbodhi/rikishi') On GitHub
+        span &nbsp;|&nbsp;  
+      if user
+        a(href='logout') Log out
+      else
+        a(href='login') Log in
+        span &nbsp;|&nbsp; 
+        a(href='signup') Sign up
+
+      span
+        if user && user.isAdmin
+          span &nbsp;|&nbsp;
+          a(href="/surveys/add") Add a survey
 
     block content
 
@@ -22,5 +35,7 @@ html
       crossorigin='anonymous'
     )
     script(src='https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.12.0/lodash.min.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js')
+
 
     script(src='/javascripts/components.js' type='text/babel')

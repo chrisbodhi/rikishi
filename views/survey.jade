@@ -4,13 +4,8 @@ block content
   if message.length
     p= message
   if user.isAdmin
-    hr
-    a(href="/surveys/add") Add a survey
-    hr
-    h2 Survey Results!
-    #survey
+    #survey.container
   else if user
-    h2 Survey Time!
-    #survey
+    #survey.container
   else
     h2 Better log in, bub.
