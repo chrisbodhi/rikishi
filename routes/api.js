@@ -9,6 +9,7 @@ var router = express.Router();
 // ///////// Start of helper functions
 function getNextSurveyId(userId) {
   var getSurveyId = _.flow(_.difference, _.sample);
+
   return db.Survey.findAll({
     attributes: ['id']
   }).then(function(surveys) {
@@ -23,6 +24,7 @@ function getNextSurveyId(userId) {
       var answered = _.map(results, function(r) {
         return r.dataValues.SurveyId;
       });
+
       return getSurveyId(allIds, answered);
     });
   });
@@ -44,6 +46,7 @@ function parseResults(resultsArr) {
   return _.map(resultsArr, function(obj) {
     var question = obj.question;
     var counts = _.map(obj.responses, function(resp) {
+
       return {
         response: resp.answer,
         count: _.filter(obj.results, function(resu) {
@@ -70,6 +73,7 @@ router.get('/surveys', isAdmin, function(req, res) {
     ]
   }).then(function(surveys) {
     var parsedResults = parseResults(surveys);
+
     res.send({
       surveyResults: parsedResults
     });
@@ -85,6 +89,7 @@ router.post('/surveys', isAdmin, function(req, res, next) {
     req.body.answer2,
     req.body.answer3
   ]);
+
   db.Survey.create({
     question: question
   }).then(function(newQuestion) {
@@ -97,6 +102,7 @@ router.post('/surveys', isAdmin, function(req, res, next) {
     console.log('Problem saving question', err);
     res.send({message: 'Problem saving question.'});
   });
+
   req.flash('surveyMessage', 'Question recorded!');
   res.redirect('back');
 });
@@ -132,8 +138,6 @@ router.post('/results', function(req, res) {
     db.Result.addResult(userId, respId, surveyId, function(result) {
       console.log('Saved result', _.size(result));
       res.send('Successfully recorded result.');
-      // req.flash('surveyMessage', 'Response saved!');
-      // res.redirect('back');
     });
   } catch (err) {
     console.log('Err recording result', err);

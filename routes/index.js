@@ -2,7 +2,10 @@ var isLoggedIn = require('../modules/auth').isLoggedIn;
 
 module.exports = function(router, passport) {
   router.get('/', function(req, res) {
-    res.render('index', { title: 'Express' });
+    res.render('login', {
+      title: 'Login Page',
+      message: req.flash('loginMessage')
+    });
   });
 
   router.get('/signup', function(req, res) {
@@ -33,7 +36,7 @@ module.exports = function(router, passport) {
 
   router.get('/logout', isLoggedIn, function(req, res) {
     req.logout();
-    res.redirect('/');
+    res.redirect('/login');
   });
 
   return router;

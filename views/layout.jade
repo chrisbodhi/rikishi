@@ -22,6 +22,8 @@ html
       span
         if user && user.isAdmin
           span &nbsp;|&nbsp;
+          a(href="/surveys") View results
+          span &nbsp;|&nbsp;
           a(href="/surveys/add") Add a survey
 
     block content
