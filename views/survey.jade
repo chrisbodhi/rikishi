@@ -6,10 +6,10 @@ block content
   if user.isAdmin
     a(href="/surveys/add") add a survey
     hr
-    #results
+    #survey
   else if user
     h2 Hey. Wanna take a survey?
-    #vote-form
+    #survey
     hr
     p= user.email
     p= user.password

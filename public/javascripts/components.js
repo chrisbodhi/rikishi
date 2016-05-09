@@ -6,7 +6,8 @@ var _ = isNode ? require('lodash') : window._;
 var SurveyResults = React.createClass({
   getInitialState: function() {
     return {
-      results: []
+      results: [],
+      user: ''
     };
   },
 
@@ -27,12 +28,11 @@ var SurveyResults = React.createClass({
     clearInterval(this.intervalId)
   },
 
-  render: function() {
+  render: function(user) {
     var results = this.state.results
       ? this.state.results
       : this.props.results;
-    return (
-      <ul>
+    return (<ul>
         {_.map(results, function(result, index) {
           return <li key={index}>
             <p>{result.question}</p>
@@ -45,23 +45,59 @@ var SurveyResults = React.createClass({
             </ul>
           </li>
         })}
-      </ul>
-    );
+      </ul>);
   }
 });
 
-var VoteForm = React.createClass({render: function(){}});
+var SurveyForm = React.createClass({
+  // todo: get this.props.user.id
+  // todo: then get array of unanswered survey ids
+  // todo: then $.get a survey
+  render: function() {
+    // console.log('this in SurveyForm', this);
+    return <p>thus we fail</p>;
+  }
+});
+
+var SurveyComponent = React.createClass({
+  getInitialState: function() {
+    return {
+      user: {}
+    };
+  },
+
+  loadServerData: function() {
+    $.get('/api/user', function(user) {
+      if (this.isMounted()) {
+        this.setState( {user: user.user });
+      }
+    }.bind(this))
+  },
+
+  componentDidMount: function() {
+    this.loadServerData();
+    this.intervalId = setInterval(this.loadServerData, 3000);
+  },
+
+  componentWillUnmount: function() {
+    clearInterval(this.intervalId)
+  },
+
+  render: function() {
+    var user = this.state.user
+      ? this.state.user
+      : this.props.user;
+    return user.isAdmin
+      ? <SurveyResults user={user} results='[]' />
+      : <SurveyForm user={user} />
+  }
+});
 
 if (isNode) {
-  exports.SurveyResults = SurveyResults;
-  exports.VoteForm = VoteForm;
+  exports.SurveyComponent = SurveyComponent;
 } else {
   ReactDOM.render(
-    <SurveyResults results='[]' />,
-    document.getElementById('results')
-  );
-  ReactDOM.render(
-    <VoteForm />,
-    document.getElementById('vote-form')
+    <SurveyComponent user={{isAdmin: 1}} />,
+    document.getElementById('survey')
   );
 }

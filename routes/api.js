@@ -119,4 +119,8 @@ router.get('/result/:surveyId', function(req, res) {
   });
 });
 
+router.get('/user', function(req, res) {
+  res.send({user: req.user.dataValues});
+});
+
 module.exports = router;
