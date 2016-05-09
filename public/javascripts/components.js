@@ -12,11 +12,12 @@ var SurveyResults = React.createClass({
   },
 
   loadServerData: function() {
-    $.get('/api/surveys', function(results) {
-      if (this.isMounted()) {
-        this.setState({ results: results.surveyResults });
-      }
-    }.bind(this))
+    $.get('/api/surveys')
+      .then(function(results) {
+        if (this.isMounted()) {
+          this.setState({ results: results.surveyResults });
+        }
+      }.bind(this))
   },
 
   componentDidMount: function() {
@@ -50,12 +51,52 @@ var SurveyResults = React.createClass({
 });
 
 var SurveyForm = React.createClass({
-  // todo: get this.props.user.id
-  // todo: then get array of unanswered survey ids
-  // todo: then $.get a survey
+  getInitialState: function() {
+    return {
+      survey: {}
+    };
+  },
+
+  getNextSurvey: function() {
+    $.get('/api/survey/user/' + this.props.user.id)
+      .then(function(resp) {
+        $.get('/api/survey/' + resp.nextId)
+          .then(function(surveyObj) {
+            if (this.isMounted()) {
+              this.setState({ survey: surveyObj });
+            }
+          }.bind(this));
+      }.bind(this));
+  },
+
+  componentDidMount: function() {
+    this.getNextSurvey();
+  },
+
+  submitForm: function() {
+    $.post().then();
+  },
+
   render: function() {
-    // console.log('this in SurveyForm', this);
-    return <p>thus we fail</p>;
+    return (
+      <form action={this.submitForm}>
+        <fieldset>
+          <label>Question: {this.state.survey.question}</label>
+          <ul>
+            {_.map(this.state.survey.answers, function(answer, index) {
+              return (<li key={index}>
+                <input
+                  type='radio'
+                  value={_.lowerCase(answer)}
+                  id={_.lowerCase(answer)} />
+                {answer}
+              </li>);
+            })}
+          </ul>
+          <input type='submit' value='Vote!' />
+        </fieldset>
+      </form>
+    );
   }
 });
 
@@ -67,11 +108,12 @@ var SurveyComponent = React.createClass({
   },
 
   loadServerData: function() {
-    $.get('/api/user', function(user) {
-      if (this.isMounted()) {
-        this.setState( {user: user.user });
-      }
-    }.bind(this))
+    $.get('/api/user')
+      .then(function(user) {
+        if (this.isMounted()) {
+          this.setState({ user: user.user });
+        }
+      }.bind(this))
   },
 
   componentDidMount: function() {

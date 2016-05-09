@@ -7,6 +7,28 @@ var isAdmin = require('../modules/auth').isAdmin;
 var router = express.Router();
 
 // ///////// Start of helper functions
+function getNextSurveyId(id) {
+  var getSurveyId = _.flow(_.difference, _.sample);
+
+  return db.Survey.findAll({
+    attributes: ['id']
+  }).then(function(surveys) {
+    return _.map(surveys, function(s) {
+      return s.dataValues.id;
+    });
+  }).then(function(allIds) {
+    return db.Result.findAll({
+      where: {UserId: id},
+      attributes: ['SurveyId']
+    }).then(function(results) {
+      var answered = _.map(results, function(r) {
+        return r.dataValues.SurveyId;
+      });
+      return getSurveyId(allIds, answered);
+    });
+  });
+}
+
 function insertResponse(res, questionId, answerString) {
   db.Response.create({
     answer: answerString,
@@ -88,6 +110,7 @@ router.get('/survey/:id', function(req, res) {
     var answers = survey.responses.map(function(obj) {
       return obj.dataValues.answer;
     });
+
     res.send({
       question: survey.question,
       answers: answers
@@ -98,6 +121,7 @@ router.get('/survey/:id', function(req, res) {
 router.post('/results', function(req, res) {
   var userId = req.user.id;           // todo: yeah right
   var selection = req.body.response;  // todo: see above note
+
   db.Result.addResponse(userId, selection, function(err, resp) {
     if (err) {
       res.send(err);
@@ -120,7 +144,19 @@ router.get('/result/:surveyId', function(req, res) {
 });
 
 router.get('/user', function(req, res) {
-  res.send({user: req.user.dataValues});
+  res.send({ user: req.user.dataValues });
+});
+
+router.get('/survey/user/:userId', function(req, res) {
+  var userId = req.params.userId;
+
+  getNextSurveyId(userId)
+    .then(function(nextId) {
+      res.send({ nextId: nextId });
+    })
+    .catch(function(err) {
+      console.log('Error getting ID for next survey', err);
+    });
 });
 
 module.exports = router;
