@@ -8,13 +8,13 @@ block content
   form(action="/signup" method="post")
     div
       label Email:
-      input(type="text" name="email" autofocus)
+      input(type="text" name="email" autofocus required)
     div
       label Password:
-      input(type="password" name="password")
+      input(type="password" name="password" required)
     div
       label Password, once more:
-      input(type="password" name="confirm-password")
+      input(type="password" name="confirm-password" required)
     div
       input(type="submit" value="Sign Up")
 
