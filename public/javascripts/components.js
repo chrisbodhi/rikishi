@@ -53,7 +53,8 @@ var SurveyResults = React.createClass({
 var SurveyForm = React.createClass({
   getInitialState: function() {
     return {
-      survey: {}
+      survey: {},
+      answer: ''
     };
   },
 
@@ -69,6 +70,10 @@ var SurveyForm = React.createClass({
       }.bind(this));
   },
 
+  handleClick: function(event) {
+    this.setState({ answer: event.target.value });
+  },
+
   componentDidMount: function() {
     this.getNextSurvey();
   },
@@ -78,20 +83,24 @@ var SurveyForm = React.createClass({
   },
 
   render: function() {
+    var question = this.state.survey.question;
+    var answers = this.state.survey.answers;
     return (
       <form action={this.submitForm}>
         <fieldset>
-          <label>Question: {this.state.survey.question}</label>
+          <label>Question: {question}</label>
+          <label>Answer: {this.state.answer}</label>
           <ul>
-            {_.map(this.state.survey.answers, function(answer, index) {
+            {_.map(answers, function(answer, index) {
               return (<li key={index}>
                 <input
                   type='radio'
-                  value={_.lowerCase(answer)}
-                  id={_.lowerCase(answer)} />
+                  name='answer'
+                  value={answer}
+                  onChange={this.handleClick}/>
                 {answer}
               </li>);
-            })}
+            }.bind(this))}
           </ul>
           <input type='submit' value='Vote!' />
         </fieldset>

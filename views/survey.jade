@@ -1,21 +1,13 @@
 extends layout
 
 block content
-  h1 Survey
-
   if user.isAdmin
     a(href="/surveys/add") add a survey
     hr
+    h2 Survey Results!
     #survey
   else if user
-    h2 Hey. Wanna take a survey?
+    h2 Survey Time!
     #survey
-    hr
-    p= user.email
-    p= user.password
-    
-    ul
-    - for (var i=0; i < Object.keys(user.dataValues).length; i++)
-      li= Object.keys(user.dataValues)[i]
   else
     h2 Better log in, bub.
